@@ -3,9 +3,13 @@ package com.rest.webservices.restfulwebservices.controller;
 import com.rest.webservices.restfulwebservices.entity.User;
 import com.rest.webservices.restfulwebservices.service.UserDaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 public class UserController {
@@ -24,7 +28,9 @@ public class UserController {
     }
 
     @PostMapping(path = "/users")
-    public User saveUser(@RequestBody User user) {
-        return userDaoService.save(user);
+    public ResponseEntity<Object> saveUser(@RequestBody User user) {
+        User savedUser = userDaoService.save(user);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
+        return ResponseEntity.created(location).build();
     }
 }
