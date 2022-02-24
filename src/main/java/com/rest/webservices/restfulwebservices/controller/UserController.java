@@ -25,8 +25,8 @@ public class UserController {
     @GetMapping(path = "/users/{id}")
     public User retrieveUserById(@PathVariable("id") int id) {
         User user = userDaoService.findOne(id);
-        if (user==null)
-            throw new UserNotFoundException("id-"+ id);
+        if (user == null)
+            throw new UserNotFoundException("id-" + id);
         return user;
     }
 
@@ -36,4 +36,12 @@ public class UserController {
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
         return ResponseEntity.created(location).build();
     }
+
+    @DeleteMapping(path = "/users/{id}")
+    public void deleteUserById(@PathVariable("id") int id) {
+        User user = userDaoService.deleteById(id);
+        if (user == null)
+            throw new UserNotFoundException("id-" + id);
+    }
+
 }
