@@ -1,5 +1,7 @@
 package com.rest.webservices.restfulwebservices.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
@@ -16,7 +18,8 @@ public class User {
     @Past
     private Date birthDate;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Post> posts;
 
     public User() {
