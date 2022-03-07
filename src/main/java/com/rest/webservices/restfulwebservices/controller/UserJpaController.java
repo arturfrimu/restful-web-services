@@ -1,9 +1,9 @@
 package com.rest.webservices.restfulwebservices.controller;
 
+import com.rest.webservices.restfulwebservices.entity.Post;
 import com.rest.webservices.restfulwebservices.entity.User;
 import com.rest.webservices.restfulwebservices.exceptions.UserNotFoundException;
 import com.rest.webservices.restfulwebservices.repository.UserRepository;
-import com.rest.webservices.restfulwebservices.service.UserDaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -33,8 +33,7 @@ public class UserJpaController {
     @GetMapping(path = "/jpa/users/{id}")
     public EntityModel<User> retrieveUserById(@PathVariable("id") int id) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty())
-            throw new UserNotFoundException("id-" + id);
+        if (user.isEmpty()) throw new UserNotFoundException("id-" + id);
 
         EntityModel<User> model = EntityModel.of(user.get());
         WebMvcLinkBuilder linkToUsers = linkTo(methodOn(this.getClass()).retrieveAllUsers());
@@ -52,5 +51,12 @@ public class UserJpaController {
     @DeleteMapping(path = "/jpa/users/{id}")
     public void deleteUserById(@PathVariable("id") int id) {
         userRepository.deleteById(id);
+    }
+
+    @GetMapping(path = "/jpa/users/{id}/posts")
+    public List<Post> retrieveAllPosts(@PathVariable int id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) throw new UserNotFoundException("id-" + id);
+        return userOptional.get().getPosts();
     }
 }
